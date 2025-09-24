@@ -1,10 +1,10 @@
 variable "name" {
-  description = "Name prefix for resources"
+  description = "Name prefix for all resources"
   type        = string
 }
 
 variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
+  description = "CIDR block for VPC"
   type        = string
 }
 
@@ -18,14 +18,34 @@ variable "private_subnets" {
   type        = list(string)
 }
 
-variable "availability_zones" {
+variable "azs" {
   description = "List of availability zones"
   type        = list(string)
 }
 
+variable "nat_type" {
+  description = "Type of NAT to deploy: nat-gateway or fck-nat"
+  type        = string
+  validation {
+    condition     = contains(["nat-gateway", "fck-nat"], var.nat_type)
+    error_message = "nat_type must be either 'nat-gateway' or 'fck-nat'."
+  }
+}
+
+variable "fck_nat_ami" {
+  description = "AMI ID for the FCK-NAT instance"
+  type        = string
+  default     = null
+}
+
+variable "fck_nat_instance_type" {
+  description = "Instance type for FCK-NAT instance"
+  type        = string
+  default     = "t3.micro"
+}
+
 variable "tags" {
-  description = "A map of tags to add to resources"
+  description = "Tags to apply to resources"
   type        = map(string)
   default     = {}
 }
-
