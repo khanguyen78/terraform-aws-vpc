@@ -67,7 +67,6 @@ resource "aws_route_table_association" "public" {
 # Option 1: AWS Managed NAT Gateway
 resource "aws_eip" "nat" {
   count = var.nat_type == "nat-gateway" ? 1 : 0
-  vpc   = true
   tags  = merge(var.tags, { Name = "${var.name}-nat-eip" })
 }
 
