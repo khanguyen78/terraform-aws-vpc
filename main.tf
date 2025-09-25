@@ -102,7 +102,7 @@ resource "aws_route" "private_nat" {
   route_table_id         = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = var.nat_type == "nat-gateway" ? aws_nat_gateway.this[0].id : null
-  instance_id            = var.nat_type == "fck-nat" ? aws_instance.fck_nat[0].id : null
+  #instance_id            = var.nat_type == "fck-nat" ? aws_instance.fck_nat[0].id : null
 }
 
 resource "aws_route_table_association" "private" {
