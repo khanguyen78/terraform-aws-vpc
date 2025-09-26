@@ -118,7 +118,7 @@ resource "aws_route" "private_app_nat" {
 resource "aws_route_table_association" "private_app" {
   count          = length(aws_subnet.private_app)
   subnet_id      = aws_subnet.private_app[count.index].id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private_app.id
 }
 
 resource "aws_route_table" "private_data" {
@@ -126,7 +126,7 @@ resource "aws_route_table" "private_data" {
   tags   = merge(var.tags, { Name = "${var.name}-private-data-rt" })
 }
 
-resource "aws_route" "private_app_nat" {
+resource "aws_route" "private_data_nat" {
   count = var.nat_type == "nat-gateway" ? 1 : var.nat_type == "fck-nat" ? 1 : 0
   route_table_id         = aws_route_table.private_data.id
   destination_cidr_block = "0.0.0.0/0"
