@@ -102,21 +102,40 @@ resource "aws_instance" "fck_nat" {
 # Private Route Table
 ##########################
 
-resource "aws_route_table" "private" {
+resource "aws_route_table" "private_app" {
   vpc_id = aws_vpc.this.id
-  tags   = merge(var.tags, { Name = "${var.name}-private-rt" })
+  tags   = merge(var.tags, { Name = "${var.name}-private-app-rt" })
 }
 
-resource "aws_route" "private_nat" {
+resource "aws_route" "private_app_nat" {
   count = var.nat_type == "nat-gateway" ? 1 : var.nat_type == "fck-nat" ? 1 : 0
-  route_table_id         = aws_route_table.private.id
+  route_table_id         = aws_route_table.private_app.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = var.nat_type == "nat-gateway" ? aws_nat_gateway.this[0].id : null
   #instance_id            = var.nat_type == "fck-nat" ? aws_instance.fck_nat[0].id : null
 }
 
-resource "aws_route_table_association" "private" {
-  count          = length(aws_subnet.private)
-  subnet_id      = aws_subnet.private[count.index].id
+resource "aws_route_table_association" "private_app" {
+  count          = length(aws_subnet.private_app)
+  subnet_id      = aws_subnet.private_app[count.index].id
   route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table" "private_data" {
+  vpc_id = aws_vpc.this.id
+  tags   = merge(var.tags, { Name = "${var.name}-private-data-rt" })
+}
+
+resource "aws_route" "private_app_nat" {
+  count = var.nat_type == "nat-gateway" ? 1 : var.nat_type == "fck-nat" ? 1 : 0
+  route_table_id         = aws_route_table.private_data.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = var.nat_type == "nat-gateway" ? aws_nat_gateway.this[0].id : null
+  #instance_id            = var.nat_type == "fck-nat" ? aws_instance.fck_nat[0].id : null
+}
+
+resource "aws_route_table_association" "private_data" {
+  count          = length(aws_subnet.private_data)
+  subnet_id      = aws_subnet.private_data[count.index].id
+  route_table_id = aws_route_table.private_data.id
 }
